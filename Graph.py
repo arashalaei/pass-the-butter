@@ -8,7 +8,7 @@ from Vertex import Vertex
 
 class Graph:
 
-    __implementation:str                # Specifies the type of graph implementation.
+    implementation:str                  # Specifies the type of graph implementation.
     __size:int                          # Adjacency matrix size.
     data_store:dict                     # To store graph data.
     adjacency_matrix:np.ndarray         # Adjacency matrix.
@@ -17,7 +17,7 @@ class Graph:
 
 
     def __init__(self, implementation:str = 'list', size:int = 100) -> None:
-        self.__implementation:str = implementation
+        self.implementation:str = implementation
         self.__size:int = size
         self.data_store:dict = {}
         self.adjacency_matrix:np.ndarray = np.zeros((self.__size, self.__size))
@@ -33,7 +33,7 @@ class Graph:
     """
     def add_edge(self, src:int, dest:int) -> None:
 
-        if self.__implementation == 'list': # implementation == adjacency list
+        if self.implementation == 'list': # implementation == adjacency list
 
             added:bool = False # To determine an edge has been added or not.
             
@@ -56,7 +56,7 @@ class Graph:
             if added:
                 self.edges_number += 1 # Increase the number of edges.
 
-        elif self.__implementation == 'matrix': # implementation == adjacency matrix
+        elif self.implementation == 'matrix': # implementation == adjacency matrix
             if src not in self.data_store:
                 self.data_store[src] = self.vertices_number
                 self.vertices_number += 1 # Increase the number of vertices.
