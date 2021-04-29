@@ -5,9 +5,23 @@
 
 class Vertex:
     
-    id:int                 # ID of each vertex.
-    adjacent_vertices:list # List of vertices adjacent to the vertex.
+    __id:any                 # ID of each vertex.
+    __adjacent_vertices:list # List of vertices adjacent to the vertex.
     
     def __init__(self, id:any) -> None:
-        self.id = id
-        self.adjacent_vertices = []
+        self.__id = id
+        self.__adjacent_vertices = []
+
+    """
+        @public
+        @return The vertex ID.
+    """
+    def get_id(self) -> any:
+        return self.__id
+
+    """
+        @public
+        @return List of adjacent vertices.
+    """
+    def get_adjacent_vertices(self) -> list:
+        return self.__adjacent_vertices

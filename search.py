@@ -1,5 +1,5 @@
+from Vertex import Vertex
 from Graph import Graph
-import utils
 
 
 """
@@ -20,10 +20,6 @@ def BFS(graph:Graph, start:any , goal:any) -> str:
 		print("Same Node")
 		return
 
-	g = {} # for adjacency list.
-	if graph.implementation == 'matrix':
-		g = utils.matrix_to_list(graph) # Convert adjacency matrix to adjacency list.
-
 	# Loop to traverse the graph
 	# with the help of the queue
 	while queue:
@@ -33,23 +29,20 @@ def BFS(graph:Graph, start:any , goal:any) -> str:
 		# Condition to check if the
 		# current node is not visited
 		if node not in explored:
-			neighbours = graph.data_store[node].adjacent_vertices if graph.implementation == 'list' else g[node]
+			neighbours:list[Vertex] = graph.get_adjacency_list()[node].get_adjacent_vertices() 
 			
 			# Loop to iterate over the
 			# neighbours of the node
 			for neighbour in neighbours:
 				new_path = list(path)
-				new_path.append(neighbour.id if graph.implementation == 'list' else neighbour)
+				new_path.append(neighbour.get_id())
 				queue.append(new_path)
 				
 				# Condition to check if the
 				# neighbour node is the goal
 				
-				if graph.implementation == 'list' and  neighbour.id == goal:
-					print("Shortest path = ", *new_path)
-					return
-				elif graph.implementation == 'matrix' and  neighbour == goal:
-					print("Shortest path = ", *new_path)
+				if neighbour.get_id() == goal:
+					print(f"Shortest path between {start} and {goal} = ", *new_path)
 					return
 
 			explored.append(node)
