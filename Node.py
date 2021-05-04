@@ -1,3 +1,8 @@
+""" 
+    @author Arash Alaei <arashalaei22@gmail.com>.
+    @since 5/5/2021
+"""
+
 class Node:
     __state:tuple
     __parent:any

@@ -7,7 +7,7 @@
 from Node import Node
 import numpy as np
 from BFS import BFS 
-
+from Bidirectional_BFS import Bidirectional_BFS
 
 
 # Driver code
@@ -19,6 +19,6 @@ if __name__ == '__main__':
     
     start =  Node((2, 1)) 
     goal  =  Node((3, 3))
-    
-    b = BFS(maze)
-    b.search(start, goal)
+
+    BFS(maze).search(start, goal)
+    Bidirectional_BFS(maze).search(start, goal)

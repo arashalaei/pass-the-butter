@@ -1,3 +1,8 @@
+""" 
+    @author Arash Alaei <arashalaei22@gmail.com>.
+    @since 5/5/2021
+"""
+
 import numpy as np
 from Node import Node
 import ordered_pair as op
@@ -17,6 +22,15 @@ class BFS:
         self.__explored       = list()
         self.__frontier       = list()
         self.__goal_test_list = list()
+    
+    def get_explored(self) -> list:
+        return self.__explored
+
+    def get_frontier(self) -> list:
+        return self.__frontier
+
+    def set_frontier(self, node:Node):
+        self.__frontier.append(node)
 
     def __goal_test(self):
         for node in self.__goal_test_list:
@@ -45,7 +59,7 @@ class BFS:
             self.__frontier.append(node)
             self.__goal_test_list.append(node)
             
-    def __generator(self, node:Node):
+    def generator(self, node:Node):
         self.__explored.append(node)
         self.__goal_test_list.clear()
 
@@ -75,18 +89,18 @@ class BFS:
 
         goal:Node = None
         while len(self.__frontier):
-            self.__generator(self.__frontier.pop(0))
+            self.generator(self.__frontier.pop(0))
             if self.__goal_test():
                 goal = self.__goal_test()
                 break
         else:
             print("Sorry, there's no way.")    
             return
-            
-        answer = ''
+
+        path = ''
         cuurent = goal
         while cuurent.get_parent():
-            answer += ' ' + cuurent.get_previous_action() 
+            path += ' ' + cuurent.get_previous_action() 
             cuurent = cuurent.get_parent()
-        
-        print(answer[::-1])
+
+        print(path[::-1])
