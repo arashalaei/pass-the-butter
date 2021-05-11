@@ -29,7 +29,7 @@ class Bidirectional_BFS:
                     return node1, node2
         return False
 
-    def search(self ,start:Node, goal:Node):
+    def search(self ,start:Node, goal:Node)-> str:
         self.__start_BFS.set_frontier(start)
         self.__goal_BFS.set_frontier(goal)
 
@@ -40,9 +40,8 @@ class Bidirectional_BFS:
             if self.__intersection_test(self.__start_BFS.get_explored(), self.__goal_BFS.get_explored()):
                 self.__intersection_point = self.__intersection_test(self.__start_BFS.get_explored(), self.__goal_BFS.get_explored())
                 break
-        else:
-            print("Sorry, there's no way.")    
-            return
+        else:    
+            return -1
 
         path1 = ''
         cuurent = self.__intersection_point[0]
@@ -64,4 +63,4 @@ class Bidirectional_BFS:
                 path2 += 'U' + ' '
 
             cuurent = cuurent.get_parent()
-        print(path1[::-1] + path2)
+        return (path1[::-1].strip() + ' ' + path2.strip()).strip()

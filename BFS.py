@@ -82,7 +82,7 @@ class BFS:
             self.__add_to_frontier(n)
 
 
-    def search(self, start:Node, goal:Node):
+    def search(self, start:Node, goal:Node) -> str:
         self.__start = start
         self.__goal  = goal
         self.__frontier.append(self.__start)
@@ -93,9 +93,8 @@ class BFS:
             if self.__goal_test():
                 goal = self.__goal_test()
                 break
-        else:
-            print("Sorry, there's no way.")    
-            return
+        else:  
+            -1
 
         path = ''
         cuurent = goal
@@ -103,4 +102,4 @@ class BFS:
             path += ' ' + cuurent.get_previous_action() 
             cuurent = cuurent.get_parent()
 
-        print(path[::-1])
+        return(path[::-1].strip())
