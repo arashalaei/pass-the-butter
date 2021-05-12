@@ -8,8 +8,10 @@ from Node import Node
 import numpy as np
 from BFS import BFS 
 from Bidirectional_BFS import Bidirectional_BFS
+from A_star import A_star
 import ordered_pair as op
 import CONST
+import input 
 
 def dual(action: str) -> str:
     if action == 'L':
@@ -31,13 +33,35 @@ def find_position(position: tuple, action: str) -> tuple:
     elif action == 'U':
         return op.sum(position, CONST.UP) 
 
-def robot(maze: np.ndarray, butter: tuple, goal: tuple, robot_position: str) -> str:
+cost = 0
+def get_path(algorithm, maze ,start:Node, goal:Node):
+    global cost
+    if algorithm == 'Bidirectional BFS':
+        p = Bidirectional_BFS(maze).search(start, goal)
+        cost += (len(p.split(' ')) - 1)
+        return p
+    elif  algorithm == 'A*':
+        a_star = A_star(maze)
+        p = a_star.search(start, goal)
+        cost += a_star.get_cost()
+        return p
+
+def robot(maze: np.ndarray, algorithm, butter: tuple, goal: tuple, robot_position: str) -> str:
+    global cost
     maze_fix = []
     i = 0
+    flag = 0
     while True:
-        path = Bidirectional_BFS(maze).search(Node(butter), Node(goal))
+        flag += 1
+        if flag > 1000:
+            return -1 # Cant find way
+        path = get_path(algorithm, maze, Node(butter), Node(goal))
+        if path == -1:
+            return -1
+
         if i == (len(path.split(' '))):
             break
+        cost = 0 
         b_pos = butter
         r_pos = robot_position
         answ = ''
@@ -48,25 +72,26 @@ def robot(maze: np.ndarray, butter: tuple, goal: tuple, robot_position: str) -> 
                 b_pos = find_position(b_pos, action)
             else:
                 temp = maze[b_pos[0]][b_pos[1]]
-                if maze[find_position(b_pos, dual(action))[0]][find_position(b_pos, dual(action))[1]] == 'X':
+                if maze[find_position(b_pos, dual(action))[0]][find_position(b_pos, dual(action))[1]] == 'x':
                     answ += dual(r_pos) + ' '
                     b_pos = find_position(b_pos, dual(r_pos))
                     
 
-                maze[b_pos[0]][b_pos[1]] = 'X'
+                maze[b_pos[0]][b_pos[1]] = 'x'
 
                 if (find_position(b_pos, dual(action))[0] < 0 or find_position(b_pos, dual(action))[0] >= maze.shape[0]) or (find_position(b_pos, dual(action))[1] < 0 or find_position(b_pos, dual(action))[1] >= maze.shape[1]):
                     maze_fix.append((b_pos[0], b_pos[1], temp))
                     if b_pos == butter:
-                        print('cant pass butter')
-                        exit(0)
+                        return -1
                     break
 
-                bfs = BFS(maze).search(Node(find_position(b_pos, r_pos)), Node(find_position(b_pos, dual(action))))
+                way = get_path(algorithm, maze, Node(find_position(b_pos, r_pos)), Node(find_position(b_pos, dual(action))))
+                if way == -1:
+                    return -1
                 if b_pos == goal:
                     i = len(path.split(' '))
                     break
-                answ += bfs +  ' ' + (action) + ' '
+                answ += way +  ' ' + (action) + ' '
                 maze[b_pos[0]][b_pos[1]] = temp
                 b_pos = find_position(b_pos, action)
                 r_pos = dual(action)
@@ -75,75 +100,45 @@ def robot(maze: np.ndarray, butter: tuple, goal: tuple, robot_position: str) -> 
     for item in maze_fix:
         maze[item[0]][item[1]] = item[2]
 
-    return answ.strip()
+    return answ.strip() , find_position(b_pos ,r_pos)
 
 # Driver code
 if __name__ == '__main__':
+    answ = ''
+    maze = input.get_maze('test1')    
+    r_pos, b_pos, p_pos = input.get_positions(maze)
 
-    # test 1
-    # maze = np.array([['2' , '2', '2' , '2', '2'],
-    #                  ['2r', '1', '1' , '1', '2'],
-    #                  ['2', '1', '1b', '1', '2'],
-    #                  ['2', '1', 'X', '1', '2'],
-    #                  ['2', '2', '2p', '2', '2']
-    #                  ])
-    # start  =  Node((1, 0)) 
-    # butter =  Node((2, 2))
-    # goal   =  Node((4, 2))
-    ##########################################################
-    # test 2
-    # maze = np.array([['1' , '1', '1' , '1', '1'],
-    #                  ['1', '1', '1b' , 'X', '1r'],
-    #                  ['2p', '1', '1', '1', '1'],
-    #                  ['2', '2', 'X', '1', '1'],
-    #                  ['1', '2', '2', '2', '1']
-    #                  ])
-    
-    # start  =  Node((1, 4)) 
-    # butter =  Node((1, 2))
-    # goal   =  Node((2, 0))
-    ##########################################################
-    # test 3
-    # maze = np.array([['1' , '1', '1' , '1', '1', '1'],
-    #                  ['2', '1', '1b' , '1r', '1b', '2'],
-    #                  ['2p', 'X', '1', '1', '1', '2'],
-    #                  ['2', '1', '1', '1', '1', '2'],
-    #                  ['1', '1', '1', '1', '1', '1p']
-    #                  ])
-    
-    # start  =  Node((1, 3)) 
-    # butter1 =  Node((1, 2))
-    # goal1   =  Node((2, 0))
-    # butter = Node((1, 4))
-    # goal = Node((4, 5))
-    ##########################################################
-    #test 4
-    # maze = np.array([['1' , '1', '1' , '1'],
-    #                  ['1r', '1', '1' , '1'],
-    #                  ['1b', '1p', '1', '1'],
-    #                  ['1', '1', '1', '1'],
-    #                  ])
-    
-    # start  =  Node((1, 0)) 
-    # butter =  Node((2, 0))
-    # goal   =  Node((2, 1))
-    ##########################################################
-    # test 5
-    maze = np.array([['1' , '1', '1' , '1', '1'],
-                     ['2', 'X', '1b' , '1r', '1'],
-                     ['2p', 'X', '1', '1', '1'],
-                     ['2', '1', '2', '1', '1'],
-                     ['1', '1', '1', '1', '1']
-                     ])
-    
-    start  =  Node((1, 3)) 
-    butter =  Node((1, 2))
-    goal   =  Node((2, 0))
-    ##########################################################
-    start_to_butter = Bidirectional_BFS(maze).search(start, butter) # D R R
-    butter_to_goal  = Bidirectional_BFS(maze).search(butter, goal)  # L D D R
-    print(start_to_butter)
-    print(butter_to_goal)
-    path = start_to_butter[: -1] + robot(maze, butter.get_state(), goal.get_state() ,dual(start_to_butter[-1])) 
+    # while len(p_pos) and len(b_pos):
+    #     for b in b_pos:
+    #         for p in p_pos:
+    #             start_to_butter = get_path('Bidirectional BFS',maze,Node(r_pos), Node(b))
+    #             if start_to_butter != -1:
+    #                 break
+    #             p, r_pos = robot(maze, 'Bidirectional BFS', b, p ,dual(start_to_butter[-1]))
+    #             answ += start_to_butter[: -1] + p
+    #             p_pos.remove(p)
+    #             b_pos.remove(b)
+    #     print(answ)
+
+
+    start  =  Node(r_pos) 
+    butter =  Node(b_pos[0])
+    goal   =  Node(p_pos[0])
+
+    algo = 'Bidirectional BFS'
+
+    start_to_butter = get_path(algo, maze, start, butter)
+    l = start_to_butter[: -1]
+    r = robot(maze,algo , butter.get_state(), goal.get_state() ,dual(start_to_butter[-1]))
+    if r != -1:
+        path = l + r[0]
+    else:
+        path = "cant pass butter"
 
     print(path)
+    if r != -1:
+        print(len(path.split(' ')) - 1)
+        if algo == 'Bidirectional BFS':
+            print(len(path.split(' ')) - 1)
+        elif algo == 'A*':
+            print(cost - 1)

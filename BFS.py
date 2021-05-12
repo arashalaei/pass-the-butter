@@ -46,13 +46,13 @@ class BFS:
 
     def __can_i_move(self, From:Node,to:str) -> bool:
         if to == 'LEFT':
-            return ((From.get_state()[1] + CONST.LEFT[1] >= 0) and (self.__maze[From.get_state()[0] + CONST.LEFT[0]][From.get_state()[1] + CONST.LEFT[1]] != 'X'))
+            return ((From.get_state()[1] + CONST.LEFT[1] >= 0) and (self.__maze[From.get_state()[0] + CONST.LEFT[0]][From.get_state()[1] + CONST.LEFT[1]] != 'x'))
         elif to == 'UP':
-            return ((From.get_state()[0] + CONST.UP[0] >= 0) and (self.__maze[From.get_state()[0] + CONST.UP[0]][From.get_state()[1] + CONST.UP[1]] != 'X'))
+            return ((From.get_state()[0] + CONST.UP[0] >= 0) and (self.__maze[From.get_state()[0] + CONST.UP[0]][From.get_state()[1] + CONST.UP[1]] != 'x'))
         elif to == 'RIGHT':
-            return ((From.get_state()[1] + CONST.RIGHT[1] < self.__maze.shape[1]) and (self.__maze[From.get_state()[0] + CONST.RIGHT[0]][From.get_state()[1] + CONST.RIGHT[1]] != 'X'))
+            return ((From.get_state()[1] + CONST.RIGHT[1] < self.__maze.shape[1]) and (self.__maze[From.get_state()[0] + CONST.RIGHT[0]][From.get_state()[1] + CONST.RIGHT[1]] != 'x'))
         elif to == 'DOWN':
-            return ((From.get_state()[0] + CONST.DOWN[0] < self.__maze.shape[0]) and (self.__maze[From.get_state()[0] + CONST.DOWN[0]][From.get_state()[1] + CONST.DOWN[1]] != 'X'))
+            return ((From.get_state()[0] + CONST.DOWN[0] < self.__maze.shape[0]) and (self.__maze[From.get_state()[0] + CONST.DOWN[0]][From.get_state()[1] + CONST.DOWN[1]] != 'x'))
     
     def __add_to_frontier(self, node:Node):
         if not self.__visited(node):

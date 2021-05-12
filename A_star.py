@@ -9,20 +9,22 @@ import ordered_pair as op
 import CONST 
 
 
-class A_start:
+class A_star:
     __maze:np.ndarray
     __start:Node
     __goal:Node
     __explored:list
     __frontier:list
     __goal_test_list:list
+    __cost: int
 
     def __init__(self, maze:np.ndarray) -> None:
         self.__maze           = maze
         self.__explored       = list()
         self.__frontier       = list()
         self.__goal_test_list = list()
-    
+        self.__cost = 0
+
     def get_explored(self) -> list:
         return self.__explored
 
@@ -37,6 +39,9 @@ class A_start:
                 return node
         return False
 
+    def get_cost(self):
+        return self.__cost
+
     def __visited(self, node:Node) -> bool:
         for n in self.__explored:
             if n.get_state() == node.get_state():
@@ -45,13 +50,13 @@ class A_start:
 
     def __can_i_move(self, From:Node,to:str) -> bool:
         if to == 'LEFT':
-            return ((From.get_state()[1] + CONST.LEFT[1] >= 0) and (self.__maze[From.get_state()[0] + CONST.LEFT[0]][From.get_state()[1] + CONST.LEFT[1]] != 'X'))
+            return ((From.get_state()[1] + CONST.LEFT[1] >= 0) and (self.__maze[From.get_state()[0] + CONST.LEFT[0]][From.get_state()[1] + CONST.LEFT[1]] != 'x'))
         elif to == 'UP':
-            return ((From.get_state()[0] + CONST.UP[0] >= 0) and (self.__maze[From.get_state()[0] + CONST.UP[0]][From.get_state()[1] + CONST.UP[1]] != 'X'))
+            return ((From.get_state()[0] + CONST.UP[0] >= 0) and (self.__maze[From.get_state()[0] + CONST.UP[0]][From.get_state()[1] + CONST.UP[1]] != 'x'))
         elif to == 'RIGHT':
-            return ((From.get_state()[1] + CONST.RIGHT[1] < self.__maze.shape[1]) and (self.__maze[From.get_state()[0] + CONST.RIGHT[0]][From.get_state()[1] + CONST.RIGHT[1]] != 'X'))
+            return ((From.get_state()[1] + CONST.RIGHT[1] < self.__maze.shape[1]) and (self.__maze[From.get_state()[0] + CONST.RIGHT[0]][From.get_state()[1] + CONST.RIGHT[1]] != 'x'))
         elif to == 'DOWN':
-            return ((From.get_state()[0] + CONST.DOWN[0] < self.__maze.shape[0]) and (self.__maze[From.get_state()[0] + CONST.DOWN[0]][From.get_state()[1] + CONST.DOWN[1]] != 'X'))
+            return ((From.get_state()[0] + CONST.DOWN[0] < self.__maze.shape[0]) and (self.__maze[From.get_state()[0] + CONST.DOWN[0]][From.get_state()[1] + CONST.DOWN[1]] != 'x'))
     
     def __add_to_frontier(self, node:Node):
         if not self.__visited(node):
@@ -112,5 +117,5 @@ class A_start:
         while cuurent.get_parent():
             path += ' ' + cuurent.get_previous_action() 
             cuurent = cuurent.get_parent()
-
+        self.__cost = goal1.get_cost()
         return(path[::-1].strip())
